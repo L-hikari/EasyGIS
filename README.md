@@ -1,5 +1,5 @@
 # EasyGIS
-EasyGIS is a usefor and light gis tool on web
+easy to use and lightweight gis tool for web
 
 # Features
 - 基本矢量数据展示
