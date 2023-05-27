@@ -1,5 +1,5 @@
-import './globals.css';
 import "ol/ol.css";
+import './globals.css';
 import Header from "./Header.jsx";
 
 export default function RootLayout({children}) {
