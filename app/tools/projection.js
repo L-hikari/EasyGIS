@@ -6,11 +6,12 @@
  */
 
 /** @type {ProjOptions} */
-const defaultProjOptions = {
+export const defaultProjOptions = {
     dataProjection: 'EPSG:4326',
     featureProjection: 'EPSG:3857'
 };
 
-export {
-    defaultProjOptions,
-}
+export const SUPPORT_PROJ = [
+    'EPSG:4326',
+    'EPSG:3857'
+];

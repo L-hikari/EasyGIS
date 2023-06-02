@@ -73,7 +73,7 @@ export default function VectorPreview() {
     }
 
     return (
-        <div className="relative" style={{height: 'calc(100% - 40px)'}}>
+        <div className="relative h-full">
             <div className="h-full" ref={mapContainer}></div>
             <textarea
                 className={

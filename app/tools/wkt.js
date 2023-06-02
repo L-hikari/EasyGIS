@@ -1,12 +1,22 @@
 import WKT from 'ol/format/WKT';
 import Feature from 'ol/Feature';
-import { defaultProjOptions } from './projection';
+import {defaultProjOptions} from './projection';
 
 export const wktReader = new WKT();
 
+export const WKT_TYPE = [
+    'POINT',
+    'LINESTRING',
+    'POLYGON',
+    'MULTIPOINT',
+    'MULTILINESTRING',
+    'MULTIPOLYGON',
+    'GEOMETRYCOLLECTION',
+];
+
 /**
  * wkt to ol/geom
- * @param {string} wkt 
+ * @param {string} wkt
  * @param {import('./projection').ProjOptions} options
  * @returns {import('ol/geom').Geometry}
  */
@@ -16,9 +26,9 @@ export function wkt2Geometry(wkt, options = defaultProjOptions) {
 
 /**
  * wkt to ol/Feature
- * @param {string} wkt 
- * @param {import('./projection').ProjOptions} options 
- * @returns 
+ * @param {string} wkt
+ * @param {import('./projection').ProjOptions} options
+ * @returns {Feature}
  */
 export function wkt2Feature(wkt, options) {
     const geom = wkt2Geometry(wkt, options);

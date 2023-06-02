@@ -21,11 +21,11 @@ export default function Page() {
                         <h3 className="text-xl font-semibold mb-2">vector data preview</h3>
                         <p className="text-gray-600">input vector data and preview on the map</p>
                     </Link>
-                    <div className="bg-white rounded-lg shadow-md p-6 duration-300 hover:scale-105">
+                    <Link href="/vector/transform" className="bg-white rounded-lg shadow-md p-6 duration-300 hover:scale-105">
                         <Image src={transformSvg} width={100} alt="Image 2" className="m-auto mb-4" />
                         <h3 className="text-xl font-semibold mb-2">data transform</h3>
                         <p className="text-gray-600">transform data format and coordinate system</p>
-                    </div>
+                    </Link>
                 </div>
             </section>
         </Fragment>
