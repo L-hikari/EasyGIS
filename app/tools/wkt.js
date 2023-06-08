@@ -35,3 +35,24 @@ export function wkt2Feature(wkt, options) {
 
     return new Feature(geom);
 }
+
+/**
+ * ol/geom to wkt
+ * @param {import('ol/geom').Geometry} geom 
+ * @param {import('./projection').ProjOptions} options
+ * @returns {string}
+ */
+export function geometry2Wkt(geom, options = defaultProjOptions) {
+    return wktReader.writeGeometry(geom, options);
+}
+
+/**
+ * ol/Feature to wkt
+ * @param {import('ol/Feature').default} feature
+ * @param {import('./projection').ProjOptions} options
+ * @returns {string}
+ */
+export function feature2Wkt(feature, options) {
+    const geometry = feature.getGeometry();
+    return geometry2Wkt(geometry, options);
+}

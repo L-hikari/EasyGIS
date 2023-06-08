@@ -10,4 +10,7 @@ export function isJSONString(str) {
     }
 }
 
+/**
+ * @enum {'WKT' | 'GeoJSON' | 'x,y,x,y'}
+ */
 export const SUPPORT_FORMAT = ['WKT', 'GeoJSON', 'x,y,x,y'];

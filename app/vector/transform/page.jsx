@@ -3,10 +3,12 @@ import React, {useEffect, useState} from 'react';
 import {SUPPORT_FORMAT, isJSONString} from '../../tools';
 import {transform} from 'ol/proj';
 import {SUPPORT_PROJ} from '../../tools/projection';
-import {WKT_TYPE} from '../../tools/wkt';
+import {WKT_TYPE, geometry2Wkt, wkt2Geometry} from '../../tools/wkt';
 import {geojson2Geometry, geometry2Geojson} from '../../tools/geojson';
+import c from 'classnames';
 
 export default function VecterDataTransform() {
+    const [textError, setTextError] = useState(false);
     const [inputText, setInputText] = useState('');
     const [outputText, setOutputText] = useState('');
     const [inputType, setInputType] = useState(SUPPORT_PROJ[0]);
@@ -14,7 +16,7 @@ export default function VecterDataTransform() {
     const [inputFormat, setInputFormat] = useState(SUPPORT_FORMAT[0]);
     const [outputFormat, setOutputFormat] = useState(SUPPORT_FORMAT[0]);
 
-    useEffect(onTransform, [inputText, inputType, outputType]);
+    useEffect(onTransform, [inputText, inputType, outputType, inputFormat, outputFormat]);
 
     function onInputTextChange(e) {
         setInputText(e.target.value);
@@ -47,28 +49,41 @@ export default function VecterDataTransform() {
             /** @type {import('ol/geom').Geometry} */
             let geometry;
             /** @type {import('../../tools/projection').ProjOptions} */
-            const sourceOptions = {
+            const inputOptions = {
                 dataProjection: inputType,
-                featureProjection: outputType,
+                featureProjection: 'EPSG:3857',
             };
-            const destinationOptions = {
+            const outputOptions = {
                 dataProjection: outputType,
-                featureProjection: inputType,
+                featureProjection: 'EPSG:3857',
             };
 
-            if (isJSONString(inputText)) {
-                geometry = geojson2Geometry(JSON.parse(inputText), sourceOptions);
-
-                output = JSON.stringify(geometry2Geojson(geometry, destinationOptions));
-            } else if (inputText.startsWith(WKT_TYPE)) {
-            } else {
+            // Transform input text
+            if (inputFormat === 'WKT') {
+                geometry = wkt2Geometry(inputText, inputOptions);
+            }
+            else if (inputFormat === 'GeoJSON') {
+                geometry = geojson2Geometry(JSON.parse(inputText), inputOptions);
+            }
+            else if (inputFormat === 'x,y,x,y') {
+                // x,y only output x,y
                 output = transformCoordString(inputText);
+                setOutputText(output);
+                return;
+            }
+
+            // Geometry to output text
+            if (outputFormat === 'WKT') {
+                output = geometry2Wkt(geometry, outputOptions);
+            }
+            else if (outputFormat === 'GeoJSON') {
+                output = JSON.stringify(geometry2Geojson(geometry, outputOptions));
             }
 
             setOutputText(output);
         } catch (error) {
             console.log(error);
-            // setTextError(true);
+            setTextError(true);
         }
     }
 
@@ -96,7 +111,7 @@ export default function VecterDataTransform() {
                     <div className="flex mb-2">
                         <label className="block mr-2">input:</label>
                         <select
-                            className="bg-gray-200 px-2 py-1 mr-2"
+                            className="border border-gray-300 px-2 py-1 mr-2"
                             onChange={onInputTypeChange}
                             value={inputType}
                         >
@@ -107,7 +122,7 @@ export default function VecterDataTransform() {
                             ))}
                         </select>
                         <select
-                            className="bg-gray-200 px-2 py-1"
+                            className="border border-gray-300 px-2 py-1"
                             onChange={onInputFormatChange}
                             value={inputFormat}
                         >
@@ -121,14 +136,16 @@ export default function VecterDataTransform() {
                     <textarea
                         onChange={onInputTextChange}
                         placeholder="input coordinate"
-                        className="w-96 h-40 bg-gray-200 p-2"
+                        className={c('w-96 h-40 border border-gray-300 p-2 outline-none', {
+                            'border-orange-600': textError
+                        })}
                     ></textarea>
                 </div>
                 <div>
                     <div className="flex mb-2">
                         <label className="block mr-2">output:</label>
                         <select
-                            className="bg-gray-200 px-2 py-1"
+                            className="border border-gray-300 px-2 py-1 mr-2"
                             onChange={onOutputTypeChange}
                             value={outputType}
                         >
@@ -139,9 +156,12 @@ export default function VecterDataTransform() {
                             ))}
                         </select>
                         <select
-                            className="bg-gray-200 px-2 py-1"
-                            onChange={onInputFormatChange}
-                            value={inputFormat}
+                            className={c('px-2 py-1 border border-gray-300', {
+                                'bg-gray-200 cursor-not-allowed': inputFormat === 'x,y,x,y'
+                            })}
+                            onChange={onOutputFormatChange}
+                            value={outputFormat}
+                            disabled={inputFormat === 'x,y,x,y'}
                         >
                             {SUPPORT_FORMAT.map(proj => (
                                 <option key={proj} value={proj}>
@@ -153,7 +173,7 @@ export default function VecterDataTransform() {
                     <textarea
                         value={outputText}
                         disabled
-                        className="w-96 h-40 bg-gray-200 p-2"
+                        className="w-96 h-40 bg-gray-200 p-2 cursor-not-allowed"
                     ></textarea>
                 </div>
             </div>
