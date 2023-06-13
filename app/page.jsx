@@ -2,6 +2,7 @@ import {Fragment} from 'react';
 import Image from 'next/image';
 import eyeSvg from "./images/eye.svg";
 import transformSvg from "./images/transform.svg";
+import drawSvg from "./images/draw.svg";
 import Link from 'next/link';
 
 export default function Page() {
@@ -17,14 +18,19 @@ export default function Page() {
             <section className="py-8">
                 <div className="max-w-4xl mx-auto grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <Link href="/vector/preview" className="bg-white rounded-lg shadow-md p-6 duration-300 hover:scale-105">
-                        <Image src={eyeSvg} width={100} alt="Image 1" className="mb-4 m-auto" />
-                        <h3 className="text-xl font-semibold mb-2">vector data preview</h3>
-                        <p className="text-gray-600">input vector data and preview on the map</p>
+                        <Image src={eyeSvg} width={100} alt="Preview" className="mb-4 m-auto" />
+                        <h3 className="text-xl font-semibold mb-2">Vector Data Preview</h3>
+                        <p className="text-gray-600">Input vector data and preview on the map</p>
                     </Link>
                     <Link href="/vector/transform" className="bg-white rounded-lg shadow-md p-6 duration-300 hover:scale-105">
-                        <Image src={transformSvg} width={100} alt="Image 2" className="m-auto mb-4" />
-                        <h3 className="text-xl font-semibold mb-2">data transform</h3>
-                        <p className="text-gray-600">transform data format and coordinate system</p>
+                        <Image src={transformSvg} width={100} alt="Transform" className="m-auto mb-4" />
+                        <h3 className="text-xl font-semibold mb-2">Data Transform</h3>
+                        <p className="text-gray-600">Transform data format and coordinate system</p>
+                    </Link>
+                    <Link href="/vector/draw" className="bg-white rounded-lg shadow-md p-6 duration-300 hover:scale-105">
+                        <Image src={drawSvg} width={100} alt="Draw" className="m-auto mb-4" />
+                        <h3 className="text-xl font-semibold mb-2">Feature Operate</h3>
+                        <p className="text-gray-600">Draw and Modify Feature</p>
                     </Link>
                 </div>
             </section>
