@@ -3,6 +3,7 @@ import Image from 'next/image';
 import eyeSvg from "./images/eye.svg";
 import transformSvg from "./images/transform.svg";
 import drawSvg from "./images/draw.svg";
+import pictureSvg from "./images/picture.svg";
 import Link from 'next/link';
 
 export default function Page() {
@@ -31,6 +32,11 @@ export default function Page() {
                         <Image src={drawSvg} width={100} alt="Draw" className="m-auto mb-4" />
                         <h3 className="text-xl font-semibold mb-2">Feature Operate</h3>
                         <p className="text-gray-600">Draw and Modify Feature</p>
+                    </Link>
+                    <Link href="/raster/preview" className="bg-white rounded-lg shadow-md p-6 duration-300 hover:scale-105">
+                        <Image src={pictureSvg} width={100} alt="Draw" className="m-auto mb-4" />
+                        <h3 className="text-xl font-semibold mb-2">Raster Data Preview</h3>
+                        <p className="text-gray-600">Preview wmts/wms/tms layer</p>
                     </Link>
                 </div>
             </section>

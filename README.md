@@ -1,8 +1,13 @@
 # EasyGIS
-easy to use and lightweight gis tool for web
+Easy to use and lightweight gis tool for web
+
+# Features
+- Vector data preview
+- Geometry format and coordinate system transform
+- Draw feature
+- OGC layers preview
 
 # TODO
-- OGC layers preview
-- Draw and modify feature
-    - Draw polygon with hole
-    - Export Data
+- Modify feature
+- Draw polygon with hole
+- Export Data
