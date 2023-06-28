@@ -23,29 +23,26 @@ export default function Modal({visible: propIsOpen, onClose, title, children, on
                 visible ? 'visible' : 'hidden'
             }`}
         >
-            {/* 背景遮罩 */}
-            {visible && <div className="fixed inset-0 bg-gray-900 bg-opacity-50"></div>}
 
-            {/* 模态框 */}
-            {visible && (
-                <div className="fixed bg-white shadow-lg">
-                    <div className="p-4">
-                        <h2 className="text-lg font-semibold">{title}</h2>
-                        <div className="mt-2">{children}</div>
-                    </div>
-                    <div className="p-4 bg-gray-100">
-                        <button onClick={onOk}>
-                            确定
-                        </button>
-                        <button
-                            className="px-4 py-2"
-                            onClick={closeModal}
-                        >
-                            关闭
-                        </button>
-                    </div>
+            <div className={`fixed inset-0 bg-gray-900 bg-opacity-50 ${visible ? 'visible' : 'hidden'}`}></div>
+
+            <div className={`fixed bg-white shadow-lg ${visible ? 'visible' : 'hidden'}`}>
+                <div className="p-4">
+                    <h2 className="text-lg font-semibold">{title}</h2>
+                    <div className="mt-2">{children}</div>
                 </div>
-            )}
+                <div className="p-4 bg-gray-100">
+                    <button onClick={onOk}>
+                        确定
+                    </button>
+                    <button
+                        className="px-4 py-2"
+                        onClick={closeModal}
+                    >
+                        关闭
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };

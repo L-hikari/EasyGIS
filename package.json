@@ -21,7 +21,10 @@
   },
   "homepage": "https://github.com/L-hikari/EasyGIS#readme",
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.1.9",
+    "@codemirror/state": "^6.2.1",
     "classnames": "^2.3.2",
+    "codemirror": "^6.0.1",
     "lodash-es": "^4.17.21",
     "next": "^13.4.3",
     "ol": "^7.3.0",
