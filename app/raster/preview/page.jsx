@@ -14,62 +14,71 @@ import Modal from '../../components/Modal';
 import {EditorView, basicSetup} from 'codemirror';
 import {javascript} from '@codemirror/lang-javascript';
 import {EditorState} from '@codemirror/state';
+import deleteSvg from "../../images/delete.svg";
+import Image from 'next/image';
+import c from 'classnames';
 
 const SUPPORT_TYPE = ['WMS', 'WMTS', 'TMS'];
 const WMSCode = `
-    // more option in
-    // https://openlayers.org/en/latest/apidoc/module-ol_source_TileWMS-TileWMS.html
-    const layer = new TileLayer({
-        source: new TileWMS({
-            url: '',
-            params: {
-                LAYERS: '',
-                // default version 1.3.0
-                VERSION: '1.3.0'
-            },
-        }),
-    });
-    Layers.push(layer);
+    // Openlayers will use the return TileLayer!!!
+    (function() {
+        // more option in
+        // https://openlayers.org/en/latest/apidoc/module-ol_source_TileWMS-TileWMS.html
+        return new TileLayer({
+            source: new TileWMS({
+                url: '',
+                params: {
+                    LAYERS: '',
+                    // default version 1.3.0
+                    VERSION: '1.3.0'
+                },
+            }),
+        });
+    })()
 `;
 const WMTSCode = `
-    const baseResolution = 156543.03392804097;
-    const resolutions = new Array(21);
-    const matrixIds = new Array(21);
-    for (let z = 0; z < 21; ++z) {
-        // generate resolutions and matrixIds arrays for this WMTS
-        resolutions[z] = baseResolution / Math.pow(2, z);
-        // TileMatrix default is z
-        // you can custom defined like \`'EPSG:3857' + ':' + z\`
-        matrixIds[z] = z;
-    }
-    // more option in
-    // https://openlayers.org/en/latest/apidoc/module-ol_source_WMTS-WMTS.html
-    const layer = new TileLayer({
-        source: new WMTS({
-            url: '',
-            layer: '',
-            matrixSet: '',
-            // default projection is EPSG:3857
-            projection: 'EPSG:3857',
-            format: 'image/png',
-            tileGrid: new WMTSTileGrid({
-                origin: [-2.003750834e7, 2.003750834e7],
-                resolutions,
-                matrixIds,
+    // Openlayers will use the return TileLayer!!!
+    (function() {
+        const baseResolution = 156543.03392804097;
+        const resolutions = new Array(21);
+        const matrixIds = new Array(21);
+        for (let z = 0; z < 21; ++z) {
+            // generate resolutions and matrixIds arrays for this WMTS
+            resolutions[z] = baseResolution / Math.pow(2, z);
+            // TileMatrix default is z
+            // you can custom defined like \`'EPSG:3857' + ':' + z\`
+            matrixIds[z] = z;
+        }
+        // more option in
+        // https://openlayers.org/en/latest/apidoc/module-ol_source_WMTS-WMTS.html
+        return new TileLayer({
+            source: new WMTS({
+                url: '',
+                layer: '',
+                matrixSet: '',
+                // default projection is EPSG:3857
+                projection: 'EPSG:3857',
+                format: 'image/png',
+                tileGrid: new WMTSTileGrid({
+                    origin: [-2.003750834e7, 2.003750834e7],
+                    resolutions,
+                    matrixIds,
+                }),
             }),
-        }),
-    });
-    Layers.push(layer);
+        });
+    })()
 `;
 const TMSCode = `
-    // more option in
-    // https://openlayers.org/en/latest/apidoc/module-ol_source_XYZ-XYZ.html
-    const layer = new TileLayer({
-        source: new XYZ({
-            url: '',
-        }),
-    });
-    Layers.push(layer);
+    // Openlayers will use the return TileLayer!!!
+    (function() {
+        // more option in
+        // https://openlayers.org/en/latest/apidoc/module-ol_source_XYZ-XYZ.html
+        return new TileLayer({
+            source: new XYZ({
+                url: '',
+            }),
+        });
+    })()
 `;
 export default function RasterPreview() {
     /** @type {{current: import('ol/Map').default}} */
@@ -80,6 +89,7 @@ export default function RasterPreview() {
     const layerCollection = useRef(
         new Collection([
             new TileLayer({
+                id: 'osm',
                 source: new OSM(),
             }),
         ])
@@ -91,6 +101,7 @@ export default function RasterPreview() {
     const [addVisible, setAddVisible] = useState(false);
     const [layerName, setLayerName] = useState('');
     const [layerType, setLayerType] = useState('WMS');
+    const [nameError, setNameError] = useState(false);
 
     useEffect(initMap, []);
 
@@ -101,7 +112,6 @@ export default function RasterPreview() {
         window.WMTS = WMTS;
         window.WMTSTileGrid = WMTSTileGrid;
         window.XYZ = XYZ;
-        window.Layers = layerCollection.current;
 
         const startState = EditorState.create({
             doc: WMSCode,
@@ -118,7 +128,7 @@ export default function RasterPreview() {
             window.TileWMS = null;
             window.WMTS = null;
             window.WMTSTileGrid = null;
-            window.Layers = null;
+            window.XYZ = null;
         };
     }, []);
 
@@ -154,18 +164,29 @@ export default function RasterPreview() {
         const draggedItem = layers[draggedIndex];
         const newItems = _cloneDeep(layers);
 
-        changeLayerOrder(index, draggedIndex);
         newItems.splice(draggedIndex, 1);
         newItems.splice(index, 0, draggedItem);
         setLayers(newItems);
+        changeLayerOrder(newItems);
     }
 
-    function changeLayerOrder(index, draggedIndex) {
-        const layer1 = layerCollection.current.item(index);
-        const layer2 = layerCollection.current.item(draggedIndex);
-
-        layerCollection.current.setAt(draggedIndex, layer1);
-        layerCollection.current.setAt(index, layer2);
+    // todo: use `collection.setAt` or `insertAt` has an error
+    // in ol/layer/Group.js maybe layer key not match.
+    // So I clear the collection and refresh order
+    function changeLayerOrder(arr) {
+        const layerArr = layerCollection.current.getArray();
+        
+        arr = arr.map(item => {
+            const layer = layerArr.find(l => l.get('id') === item.id);
+            if (layer) {
+                return layer;
+            } else {
+                throw new Error(`layer id: ${id} not find`);
+            }
+        });
+        
+        layerCollection.current.clear();
+        layerCollection.current.extend(arr);
     }
 
     function changeLayerVisible(index, visible) {
@@ -175,19 +196,28 @@ export default function RasterPreview() {
     }
 
     function onAddLayer() {
+        if (!layerName.trim()) {
+            setNameError(true);
+            return;
+        }
+        const arr = _cloneDeep(layers);
+
         const code = editorRef.current.state.doc.toString();
 
-        eval(code);
+        const layer = eval(code);
+        const id = arr.length;
+        layer.set('id', id);
+        layerCollection.current.push(layer);
 
-        const arr = _cloneDeep(layers);
         arr.push({
             name: layerName,
             type: layerType,
             checked: true,
-            id: Date.now(),
+            id,
         });
         setLayers(arr);
         setAddVisible(false);
+        setLayerName('');
     }
 
     function onLayerTypeChange(e) {
@@ -207,6 +237,20 @@ export default function RasterPreview() {
         setLayerType(type);
     }
 
+    function onDeleteLayer(index) {
+        const arr = _cloneDeep(layers);
+        
+        arr.splice(index, 1);
+        setLayers(arr);
+
+        layerCollection.current.removeAt(index);
+    }
+
+    function onLayerNameChange(e) {
+        setLayerName(e.target.value);
+        setNameError(false);
+    }
+
     return (
         <div className="h-full flex">
             <Modal
@@ -221,8 +265,11 @@ export default function RasterPreview() {
                     </label>
                     <input
                         type="text"
-                        className="border border-gray-300"
-                        onChange={e => setLayerName(e.target.value)}
+                        value={layerName}
+                        className={c('border border-gray-300 outline-0', {
+                            'border-orange-600': nameError,
+                        })}
+                        onChange={onLayerNameChange}
                     />
                 </div>
                 <div className="mb-2">
@@ -251,29 +298,41 @@ export default function RasterPreview() {
                 <p className="border-b border-gray-300 pl-3">
                     Layer list you can drag the order and check the visible
                 </p>
-                <ul className="pl-6 space-y-2">
+                <ul className="space-y-2 px-2">
                     {layers.map((item, index) => (
                         <li
                             key={item.id}
-                            className="flex items-center"
+                            className="flex items-center justify-between"
                             draggable
                             onDragStart={event => onDragStart(event, index)}
                             onDragOver={onDragOver}
                             onDrop={event => onDrop(event, index)}
                         >
-                            <input
-                                type="checkbox"
-                                className="mr-2"
-                                checked={item.checked}
-                                onChange={event => onCheckboxChange(event, index)}
+                            <div>
+                                <input
+                                    type="checkbox"
+                                    className="mr-2"
+                                    checked={item.checked}
+                                    onChange={event => onCheckboxChange(event, index)}
+                                />
+                                <span className="text-gray-800">
+                                    {item.name}({item.type})
+                                </span>
+                            </div>
+                            <Image
+                                src={deleteSvg}
+                                width={15}
+                                alt="delete"
+                                className="cursor-pointer"
+                                onClick={() => onDeleteLayer(index)}
                             />
-                            <span className="text-gray-800">
-                                {item.name}({item.type})
-                            </span>
                         </li>
                     ))}
                 </ul>
-                <button onClick={() => setAddVisible(true)}>Add Layer</button>
+                <button
+                    className="border-gray-300 border px-2 ml-2 mt-2"
+                    onClick={() => setAddVisible(true)}
+                >Add Layer</button>
             </div>
             <div className="h-full flex-1" ref={mapContainer}></div>
         </div>

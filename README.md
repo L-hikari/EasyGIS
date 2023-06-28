@@ -10,4 +10,5 @@ Easy to use and lightweight gis tool for web
 # TODO
 - Modify feature
 - Draw polygon with hole
+- OGC layers simple config
 - Export Data
