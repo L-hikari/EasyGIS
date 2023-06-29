@@ -6,13 +6,19 @@ import drawSvg from "./images/draw.svg";
 import pictureSvg from "./images/picture.svg";
 import Link from 'next/link';
 
+/** @type {import("next").Metadata} */
+export const metadata = {
+    keywords: 'gis, gis tool, map, openlayers',
+    description: 'Easy to use and lightweight gis tool for web'
+};
+
 export default function Page() {
     return (
         <Fragment>
             <section className="bg-gray-200 py-8">
                 <div className="max-w-4xl mx-auto px-4">
                     <h2 className="text-3xl font-semibold mb-4">EasyGIS</h2>
-                    <p className="text-gray-600">easy to use and lightweight gis tool for web</p>
+                    <p className="text-gray-600">Easy to use and lightweight gis tool for web</p>
                 </div>
             </section>
 
