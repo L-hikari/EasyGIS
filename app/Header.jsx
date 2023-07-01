@@ -12,7 +12,7 @@ export default function Header() {
                     height={35}
                 />
             </Link>
-            <a href="https://github.com/L-hikari" target="_blank" className="w-10 text-center text-white">
+            <a href="https://github.com/L-hikari/EasyGIS" target="_blank" className="w-10 text-center text-white">
                 <Image
                     src="/images/github.svg"
                     alt="github"
