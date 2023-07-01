@@ -14,7 +14,7 @@ import Modal from '../../components/Modal';
 import {EditorView, basicSetup} from 'codemirror';
 import {javascript} from '@codemirror/lang-javascript';
 import {EditorState} from '@codemirror/state';
-import deleteSvg from "../../images/delete.svg";
+// import deleteSvg from "../../images/delete.svg";
 import Image from 'next/image';
 import c from 'classnames';
 
@@ -320,8 +320,9 @@ export default function RasterPreview() {
                                 </span>
                             </div>
                             <Image
-                                src={deleteSvg}
+                                src="/images/delete.svg"
                                 width={15}
+                                height={15}
                                 alt="delete"
                                 className="cursor-pointer"
                                 onClick={() => onDeleteLayer(index)}
