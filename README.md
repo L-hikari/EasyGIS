@@ -2,6 +2,8 @@
 <p align="center">
   <img width="256px" src="./app/favicon.ico">
 </p>
+
+# [简体中文](./README_ZH.md)
 Easy to use and lightweight gis tool for web
 
 # Description
@@ -17,5 +19,4 @@ EasyGIS is based on [Openlayers](https://openlayers.org), can help you finish so
 - Modify feature
 - Draw polygon with hole
 - Split polygon and merge polygon
-- OGC layers simple config
-- Export Data
+- Add bd09 and gcj02 coordinate system
