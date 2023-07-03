@@ -9,7 +9,7 @@
 # Description
 基于 [Openlayers](https://openlayers.org), 可以帮你实现一些日常小需求.
 
-**注意！！！默认底图用的OpenStreetMap，由于大陆国策局规定国内没有在线的免费84地图，可能需要科学上网才能访问**
+**注意！！！默认底图用的OpenStreetMap，由于大陆国策局规定，不可以在互联网公开84地图，可能需要科学上网才能访问**
 
 # Features
 - 矢量数据预览
