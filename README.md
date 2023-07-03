@@ -19,6 +19,5 @@ EasyGIS is based on [Openlayers](https://openlayers.org), can help you finish so
 - Modify feature
 - Draw polygon with hole
 - Split polygon and merge polygon
-- Add bd09 and gcj02 coordinate system
 
 **该项目只为方便gis开发人员，不存在任何商业性质等用途。请大家自觉遵守中华人民共和国测绘法，不要随意公开分享wgs84数据**
