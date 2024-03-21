@@ -6,6 +6,7 @@ import {SUPPORT_PROJ} from '../../tools/projection';
 import {WKT_TYPE, geometry2Wkt, wkt2Geometry} from '../../tools/wkt';
 import {geojson2Geometry, geometry2Geojson} from '../../tools/geojson';
 import c from 'classnames';
+import { Geometry, Point, Polygon } from 'ol/geom';
 
 export default function VecterDataTransform() {
     const [textError, setTextError] = useState(false);
@@ -39,14 +40,13 @@ export default function VecterDataTransform() {
     }
 
     function onTransform() {
-
         if (!inputText.trim()) {
             return;
         }
 
         try {
             let output = '';
-            /** @type {import('ol/geom').Geometry} */
+            /** @type {Geometry} */
             let geometry;
             /** @type {import('../../tools/projection').ProjOptions} */
             const inputOptions = {
@@ -66,10 +66,7 @@ export default function VecterDataTransform() {
                 geometry = geojson2Geometry(JSON.parse(inputText), inputOptions);
             }
             else if (inputFormat === 'x,y,x,y') {
-                // x,y only output x,y
-                output = transformCoordString(inputText);
-                setOutputText(output);
-                return;
+                geometry = transformCoordString(inputText);
             }
 
             // Geometry to output text
@@ -78,6 +75,21 @@ export default function VecterDataTransform() {
             }
             else if (outputFormat === 'GeoJSON') {
                 output = JSON.stringify(geometry2Geojson(geometry, outputOptions));
+            }
+            else if (outputFormat === 'x,y,x,y') {
+                let coords = geometry.getCoordinates();
+                const geometryType = geometry.getType();
+
+                if (geometryType === 'Point') {
+                    output = transform(coords, 'EPSG:3857', outputType).join(',');
+                }
+                else {
+                    coords = coords.flat(Infinity);
+                    for (let i = 0; i < coords.length; i += 2) {
+                        const res = transform([coords[i], coords[i + 1]], 'EPSG:3857', outputType);
+                        output += `${res.join(',')},`;
+                    }
+                }
             }
 
             setOutputText(output);
@@ -88,20 +100,24 @@ export default function VecterDataTransform() {
     }
 
     /**
-     *
      * @param {string} str
+     * @returns {Geometry}
      */
     function transformCoordString(str) {
         const source = str.split(',');
         const destination = [];
 
         for (let i = 0; i < source.length; i += 2) {
-            const res = transform([source[i], source[i + 1]], inputType, outputType);
+            const res = transform([source[i], source[i + 1]], inputType, 'EPSG:3857');
 
             destination.push(res);
         }
 
-        return destination.join();
+        if (destination.length === 1) {
+            return new Point(destination[0]);;
+        }
+
+        return new Polygon([destination]);
     }
 
     return (
@@ -156,12 +172,9 @@ export default function VecterDataTransform() {
                             ))}
                         </select>
                         <select
-                            className={c('px-2 py-1 border border-gray-300', {
-                                'bg-gray-200 cursor-not-allowed': inputFormat === 'x,y,x,y'
-                            })}
+                            className={'px-2 py-1 border border-gray-300'}
                             onChange={onOutputFormatChange}
                             value={outputFormat}
-                            disabled={inputFormat === 'x,y,x,y'}
                         >
                             {SUPPORT_FORMAT.map(proj => (
                                 <option key={proj} value={proj}>
