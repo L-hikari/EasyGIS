@@ -1,6 +1,9 @@
 import {Fragment} from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import {Link} from 'react-router-dom';
+import EveSvg from '../images/eye.svg';
+import TransFormSvg from '../images/transform.svg';
+import DrawSvg from '../images/draw.svg';
+import PictureSvg from '../images/picture.svg';
 
 /** @type {import("next").Metadata} */
 export const metadata = {
@@ -8,7 +11,7 @@ export const metadata = {
     description: 'Easy to use and lightweight gis tool for web',
 };
 
-export default function Page() {
+export default function Home() {
     return (
         <Fragment>
             <section className="bg-gray-200 py-8">
@@ -21,11 +24,11 @@ export default function Page() {
             <section className="py-8">
                 <div className="max-w-4xl mx-auto grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <Link
-                        href="/vector/preview"
+                        to="/vector/preview"
                         className="bg-white rounded-lg shadow-md p-6 duration-300 hover:scale-105"
                     >
-                        <Image
-                            src="/images/eye.svg"
+                        <img
+                            src={EveSvg}
                             alt="Preview"
                             className="mb-4 m-auto"
                             width={100}
@@ -35,11 +38,11 @@ export default function Page() {
                         <p className="text-gray-600">Input vector data and preview on the map</p>
                     </Link>
                     <Link
-                        href="/vector/transform"
+                        to="/vector/transform"
                         className="bg-white rounded-lg shadow-md p-6 duration-300 hover:scale-105"
                     >
-                        <Image
-                            src="/images/transform.svg"
+                        <img
+                            src={TransFormSvg}
                             alt="Transform"
                             className="m-auto mb-4"
                             width={100}
@@ -49,11 +52,11 @@ export default function Page() {
                         <p className="text-gray-600">Transform data format and coordinate system</p>
                     </Link>
                     <Link
-                        href="/vector/draw"
+                        to="/vector/draw"
                         className="bg-white rounded-lg shadow-md p-6 duration-300 hover:scale-105"
                     >
-                        <Image
-                            src="/images/draw.svg"
+                        <img
+                            src={DrawSvg}
                             alt="Draw"
                             className="m-auto mb-4"
                             width={100}
@@ -63,11 +66,11 @@ export default function Page() {
                         <p className="text-gray-600">Draw and Modify Feature</p>
                     </Link>
                     <Link
-                        href="/raster/preview"
+                        to="/raster/preview"
                         className="bg-white rounded-lg shadow-md p-6 duration-300 hover:scale-105"
                     >
-                        <Image
-                            src="/images/picture.svg"
+                        <img
+                            src={PictureSvg}
                             alt="Draw"
                             className="m-auto mb-4"
                             width={100}

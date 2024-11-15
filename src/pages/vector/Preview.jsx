@@ -75,7 +75,7 @@ export default function VectorPreview() {
             /** @type {import('ol/Feature').default} */
             let feature;
 
-            /** @type {import('../../tools/projection').ProjOptions} */
+            /** @type {import('../../../tools/projection').ProjOptions} */
             const projOptions = {
                 dataProjection: coordSystem,
                 featureProjection: 'EPSG:3857'

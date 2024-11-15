@@ -1,4 +1,3 @@
-'use client';
 import React, {useEffect, useRef, useState} from 'react';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -14,9 +13,8 @@ import Modal from '../../components/Modal';
 import {EditorView, basicSetup} from 'codemirror';
 import {javascript} from '@codemirror/lang-javascript';
 import {EditorState} from '@codemirror/state';
-// import deleteSvg from "../../images/delete.svg";
-import Image from 'next/image';
 import c from 'classnames';
+import DeleteSvg from "../../images/delete.svg";
 
 const SUPPORT_TYPE = ['WMS', 'WMTS', 'TMS'];
 const WMSCode = `
@@ -319,8 +317,8 @@ export default function RasterPreview() {
                                     {item.name}({item.type})
                                 </span>
                             </div>
-                            <Image
-                                src="/images/delete.svg"
+                            <img
+                                src={DeleteSvg}
                                 width={15}
                                 height={15}
                                 alt="delete"
