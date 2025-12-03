@@ -1,6 +1,6 @@
 # EasyGIS
 <p align="center">
-  <img width="256px" src="./app/favicon.ico">
+  <img width="256px" src="./favicon.ico">
 </p>
 
 # [English](./README.md)
