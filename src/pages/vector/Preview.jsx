@@ -108,6 +108,7 @@ export default function VectorPreview() {
             }
 
             vectorSource.current.addFeature(feature);
+            view.fit(feature.getGeometry().getExtent());
         } catch (error) {
             console.log(error);
             setTextError(true);
